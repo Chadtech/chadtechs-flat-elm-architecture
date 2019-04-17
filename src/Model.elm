@@ -3,6 +3,7 @@ module Model exposing
     , toSession
     )
 
+import Dashboard.Model as Dashboard
 import Search.Model as Search
 import Session exposing (Session)
 
@@ -15,7 +16,7 @@ type Model
     = Blank Session
     | Error Session
     | Search Search.Model
-    | Dashboard Session
+    | Dashboard Dashboard.Model
 
 
 
@@ -34,5 +35,5 @@ toSession model =
         Search searchModel ->
             Search.toSession searchModel
 
-        Dashboard session ->
-            session
+        Dashboard dashboardModel ->
+            Dashboard.toSession dashboardModel

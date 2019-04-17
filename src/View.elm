@@ -1,6 +1,7 @@
 module View exposing (view)
 
 import Browser
+import Dashboard.Page as Dashboard
 import Document exposing (Document)
 import Html.Styled as Html exposing (Html)
 import Json.Decode as Decode
@@ -49,5 +50,6 @@ viewBody model =
             Search.view searchModel
                 |> List.map (Html.map SearchMsg)
 
-        Model.Dashboard _ ->
-            []
+        Model.Dashboard dashboardModel ->
+            Dashboard.view dashboardModel
+                |> List.map (Html.map DashboardMsg)

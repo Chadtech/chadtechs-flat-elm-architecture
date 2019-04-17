@@ -1,4 +1,4 @@
-module Search.Page exposing
+module Dashboard.Page exposing
     ( Msg
     , update
     , view
@@ -24,7 +24,7 @@ type Msg
 
 view : Model -> List (Html Msg)
 view model =
-    [ Header.view Route.Search
+    [ Header.view Route.Dashboard
         |> Html.map HeaderMsg
     ]
 

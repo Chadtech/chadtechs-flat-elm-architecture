@@ -10,6 +10,7 @@ import Html.Styled as Html exposing (Html)
 import Html.Styled.Attributes as Attrs
 import Html.Styled.Events as Events
 import Route exposing (Route)
+import Session exposing (Session)
 import Style
 
 
@@ -67,7 +68,7 @@ navButton currentRoute thisRoute =
         [ Attrs.css styles
         , Events.onClick (RouteClicked thisRoute)
         ]
-        [ Html.text <| Route.toString thisRoute ]
+        [ Html.text <| Route.toLabel thisRoute ]
 
 
 title : Html Msg
@@ -76,15 +77,15 @@ title =
         [ Attrs.css
             [ Style.bigFont ]
         ]
-        [ Html.text "Log Liner" ]
+        [ Html.text "log liner" ]
 
 
 
 -- UPDATE --
 
 
-update : Msg -> Cmd msg
-update msg =
+update : Session -> Msg -> Cmd msg
+update session msg =
     case msg of
         RouteClicked route ->
-            Cmd.none
+            Session.navigateTo session route

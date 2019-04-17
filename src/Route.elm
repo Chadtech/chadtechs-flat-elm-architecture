@@ -1,7 +1,8 @@
 module Route exposing
     ( Route(..)
     , fromUrl
-    , toString
+    , toLabel
+    , toUrlString
     )
 
 -- TYPES --
@@ -19,8 +20,18 @@ type Route
 -- HELPERS --
 
 
-toString : Route -> String
-toString route =
+toLabel : Route -> String
+toLabel route =
+    case route of
+        Search ->
+            "search"
+
+        Dashboard ->
+            "dashboard"
+
+
+toUrlString : Route -> String
+toUrlString route =
     case route of
         Search ->
             "search"

@@ -2,6 +2,8 @@ module Main exposing (main)
 
 import Browser
 import Browser.Navigation as Nav
+import Dashboard.Model
+import Dashboard.Page
 import Flags
 import Json.Decode as Decode
 import Model exposing (Model)
@@ -26,7 +28,7 @@ main =
     , view = view
     , update = update
     , subscriptions = subscriptions
-    , onUrlChange = UrlChanged
+    , onUrlChange = RouteChanged << Route.fromUrl
     , onUrlRequest = UrlRequested
     }
         |> Browser.application
@@ -78,10 +80,9 @@ update msg result =
 
 updateFromOk : Msg -> Model -> ( Model, Cmd Msg )
 updateFromOk msg model =
-    case msg of
-        UrlChanged _ ->
-            model
-                |> CmdUtil.withNoCmd
+    case Debug.log "MSG" msg of
+        RouteChanged maybeRoute ->
+            handleRoute maybeRoute model
 
         UrlRequested _ ->
             model
@@ -93,6 +94,17 @@ updateFromOk msg model =
                     Search.Page.update subMsg searchModel
                         |> Tuple.mapFirst Model.Search
                         |> CmdUtil.mapCmd SearchMsg
+
+                _ ->
+                    model
+                        |> CmdUtil.withNoCmd
+
+        DashboardMsg subMsg ->
+            case model of
+                Model.Dashboard dashboardModel ->
+                    Dashboard.Page.update subMsg dashboardModel
+                        |> Tuple.mapFirst Model.Dashboard
+                        |> CmdUtil.mapCmd DashboardMsg
 
                 _ ->
                     model
@@ -110,7 +122,7 @@ handleRoute maybeRoute model =
         session =
             Model.toSession model
     in
-    case Debug.log "MAYBE ROUTE" maybeRoute of
+    case maybeRoute of
         Nothing ->
             Model.Error session
                 |> CmdUtil.withNoCmd
@@ -120,5 +132,6 @@ handleRoute maybeRoute model =
                 |> CmdUtil.withNoCmd
 
         Just Route.Dashboard ->
-            Model.Dashboard session
+            Model.Dashboard (Dashboard.Model.init session)
+                |> Debug.log "DASHBOARD NOW"
                 |> CmdUtil.withNoCmd
