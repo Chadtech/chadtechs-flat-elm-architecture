@@ -13,6 +13,8 @@ import Route exposing (Route)
 
 type alias Session =
     { navKey : Nav.Key
+
+    --    ,
     }
 
 

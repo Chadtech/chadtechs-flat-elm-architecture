@@ -133,5 +133,4 @@ handleRoute maybeRoute model =
 
         Just Route.Dashboard ->
             Model.Dashboard (Dashboard.Model.init session)
-                |> Debug.log "DASHBOARD NOW"
                 |> CmdUtil.withNoCmd
