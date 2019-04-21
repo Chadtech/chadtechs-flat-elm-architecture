@@ -1,5 +1,6 @@
 module Data.Event exposing
     ( Event
+    , generator
     , timestamp
     )
 

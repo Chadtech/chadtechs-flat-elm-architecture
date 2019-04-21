@@ -38,7 +38,8 @@ init : Decode.Value -> Url -> Nav.Key -> ( Result Decode.Error Model, Cmd Msg )
 init json url navKey =
     case Decode.decodeValue Flags.decoder json of
         Ok flags ->
-            { navKey = navKey }
+            flags
+                |> Session.init navKey
                 |> Model.Blank
                 |> handleRoute (Route.fromUrl url)
                 |> Tuple.mapFirst Ok

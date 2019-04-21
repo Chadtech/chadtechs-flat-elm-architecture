@@ -1,8 +1,17 @@
-module View.LogLines exposing (view)
+module View.LogLines exposing
+    ( container
+    , viewLine
+    )
 
+import Data.Event exposing (Event)
 import Html.Styled as Html exposing (Html)
 
 
-view : Html msg
-view =
+container : List (Html msg) -> Html msg
+container =
+    Html.div []
+
+
+viewLine : Event -> Html msg
+viewLine event =
     Html.text ""
