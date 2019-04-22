@@ -25,7 +25,6 @@ It looks like (to me at least) that many people in the Elm community are learnin
 │   ├── Model.elm
 │   │        Model + helpers
 │   └── Page.elm
-│   └── Page.elm
 │             view, update, Msg
 ├── Session.elm
 ├── Style.elm
