@@ -5,6 +5,7 @@ module View.Card exposing
     )
 
 import Css exposing (..)
+import Html.Grid as Grid
 import Html.Styled as Html exposing (Attribute, Html)
 import Html.Styled.Attributes as Attrs
 import Html.Styled.Events as HtmlEvents
@@ -15,8 +16,8 @@ view : List Style -> List (Html msg) -> Html msg
 view styles =
     Html.div
         [ Attrs.css
-            [ Css.batch styles
-            , baseStyles
+            [ baseStyles
+            , Css.batch styles
             ]
         ]
 
@@ -26,30 +27,27 @@ baseStyles =
     [ Style.borders
     , minWidth (px 100)
     , minHeight (px 100)
-    , position absolute
-    , top (pct 50)
-    , left (pct 50)
-    , transform (translate2 (pct -50) (pct -50))
     , backgroundColor Style.darkGray
     , padding (px 10)
     ]
         |> Css.batch
 
 
-body : List (Html msg) -> Html msg
-body =
+body : List Style -> List (Html msg) -> Html msg
+body styles =
     Html.div
         [ Attrs.css
             [ Style.borders
             , minWidth (px 100)
             , minHeight (px 100)
             , backgroundColor Style.black
+            , Css.batch styles
             ]
         ]
 
 
-header : msg -> Html msg
-header closeClickHandler =
+header : List (Html msg) -> msg -> Html msg
+header children closeClickHandler =
     Html.div
         [ Attrs.css
             [ marginBottom (px 10)
@@ -57,13 +55,20 @@ header closeClickHandler =
             , justifyContent flexEnd
             ]
         ]
-        [ Html.button
-            [ Attrs.css
-                [ backgroundColor Style.black
-                , hover
-                    [ Style.highlightedButton ]
-                ]
-            , HtmlEvents.onClick closeClickHandler
-            ]
-            [ Html.text "X" ]
-        ]
+        (Grid.column
+            []
+            children
+            :: [ Grid.column
+                    [ flex (int 0) ]
+                    [ Html.button
+                        [ Attrs.css
+                            [ backgroundColor Style.black
+                            , hover
+                                [ Style.highlightedButton ]
+                            ]
+                        , HtmlEvents.onClick closeClickHandler
+                        ]
+                        [ Html.text "X" ]
+                    ]
+               ]
+        )

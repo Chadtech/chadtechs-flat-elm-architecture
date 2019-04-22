@@ -102,15 +102,47 @@ searchResults model =
                             , eventId = id
                             }
                         ]
+
+                events : List ( Id Event, Event )
+                events =
+                    searchText
+                        |> Session.searchEvents (Model.toSession model)
+
+                eventViews : List (Html Msg)
+                eventViews =
+                    events
+                        |> List.take 200
+                        |> List.map eventView
             in
-            searchText
-                |> Session.searchEvents (Model.toSession model)
-                |> List.map eventView
-                |> List.take 200
-                |> Html.div
-                    [ Attrs.css
-                        [ overflow auto ]
-                    ]
+            Html.div
+                [ Attrs.css
+                    [ overflow auto ]
+                ]
+                (remainingEventsView events :: eventViews)
+
+
+remainingEventsView : List ( Id Event, Event ) -> Html Msg
+remainingEventsView events =
+    let
+        remainingEvents : Int
+        remainingEvents =
+            max 0 (List.length events - 200)
+    in
+    Grid.row
+        []
+        [ Grid.column
+            [ Style.bottomBorder
+            , padding (px 10)
+            , justifyContent center
+            ]
+            [ Html.p
+                []
+                [ String.fromInt remainingEvents
+                    ++ " events remaining"
+                    |> Html.text
+                ]
+            ]
+        ]
 
 
 searchBar : String -> List (Html Msg)

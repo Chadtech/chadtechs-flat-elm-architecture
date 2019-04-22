@@ -2,7 +2,7 @@ module View.LogLines exposing
     ( Context(..)
     , DialogMsg
     , Model
-    , NoContext
+    , NoContext(..)
     , bodyView
     , contextButton
     , contextDialog
@@ -233,9 +233,19 @@ openContextDialogView event contextModel =
                 "delete event"
     in
     Card.view
-        []
-        [ Card.header CloseClicked
+        [ position absolute
+        , top (pct 50)
+        , left (pct 50)
+        , transform (translate2 (pct -50) (pct -50))
+        ]
+        [ Card.header
+            [ Html.p
+                []
+                [ Html.text "event context" ]
+            ]
+            CloseClicked
         , Card.body
+            []
             [ Html.div
                 [ Attrs.css
                     [ padding (px 10) ]
