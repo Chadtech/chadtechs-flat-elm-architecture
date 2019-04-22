@@ -1,9 +1,10 @@
 module Style exposing
-    ( bigFont
-    , black
+    ( black
+    , borders
     , bottomBorder
     , darkGray
     , globals
+    , gray
     , highlightedButton
     , lightGray
     , red
@@ -19,7 +20,9 @@ import Html.Styled exposing (Html)
 
 globals : Html msg
 globals =
-    [ Css.Global.p
+    [ Css.Global.everything
+        [ boxSizing borderBox ]
+    , Css.Global.p
         [ fontFamilies [ "monospace" ]
         , color lightGray
         , margin (px 0)
@@ -64,11 +67,6 @@ highlightedButton =
         |> Css.batch
 
 
-bigFont : Style
-bigFont =
-    fontSize (px 30)
-
-
 
 -- COLORS --
 
@@ -98,6 +96,11 @@ darkGray =
     hex "#36110d"
 
 
+gray : Color
+gray =
+    hex "#7b421d"
+
+
 red : Color
 red =
     hex "#f21d23"
@@ -115,3 +118,8 @@ bottomBorder =
 rightBorder : Style
 rightBorder =
     borderRight3 (px 1) solid lightGray
+
+
+borders : Style
+borders =
+    border3 (px 1) solid lightGray

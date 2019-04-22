@@ -129,8 +129,10 @@ handleRoute maybeRoute model =
                 |> CmdUtil.withNoCmd
 
         Just Route.Search ->
-            Model.Search (Search.Model.init session)
-                |> CmdUtil.withNoCmd
+            ( Model.Search (Search.Model.init session)
+            , Search.Page.init
+                |> Cmd.map SearchMsg
+            )
 
         Just Route.Dashboard ->
             Model.Dashboard (Dashboard.Model.init session)

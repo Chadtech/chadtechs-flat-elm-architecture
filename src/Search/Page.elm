@@ -1,9 +1,11 @@
 module Search.Page exposing
     ( Msg
+    , init
     , update
     , view
     )
 
+import Browser.Dom
 import Css exposing (..)
 import Data.Event as Event exposing (Event)
 import Header
@@ -16,6 +18,7 @@ import Route
 import Search.Model as Model exposing (Model)
 import Session
 import Style
+import Task
 import Util.Cmd as CmdUtil
 import Util.Html as HtmlUtil
 import View.Input as Input
@@ -27,10 +30,24 @@ import View.LogLines as LogLines
 
 
 type Msg
-    = HeaderMsg Header.Msg
+    = GotHeaderMsg Header.Msg
     | RunClicked
     | EnterPressed
     | SearchUpdated String
+    | EventClicked (Id Event)
+    | InputFocused (Result Browser.Dom.Error ())
+    | ContextClicked (Id Event)
+    | GotContextDialogMsg LogLines.DialogMsg
+
+
+
+-- INIT --
+
+
+init : Cmd Msg
+init =
+    Browser.Dom.focus searchBarInputId
+        |> Task.attempt InputFocused
 
 
 
@@ -39,8 +56,12 @@ type Msg
 
 view : Model -> List (Html Msg)
 view model =
-    [ Header.view Route.Search
-        |> Html.map HeaderMsg
+    [ LogLines.contextDialog
+        (Model.toSession model)
+        model.logLines.contextModel
+        |> Html.map GotContextDialogMsg
+    , Header.view Route.Search
+        |> Html.map GotHeaderMsg
     , Html.div
         []
         (searchBar model.searchText)
@@ -72,13 +93,14 @@ searchResults model =
                 eventView : ( Id Event, Event ) -> Html Msg
                 eventView ( id, event ) =
                     LogLines.lineView
-                        [ hover
-                            [ backgroundColor Style.darkGray ]
-                        ]
-                        [ LogLines.timestampView <| Event.timestamp event
+                        [ LogLines.contextButton (ContextClicked id)
+                        , LogLines.timestampView <| Event.timestamp event
                         , LogLines.bodyView
-                            []
-                            event.body
+                            { model = model.logLines
+                            , attributes = [ HtmlEvents.onClick (EventClicked id) ]
+                            , text = event.body
+                            , eventId = id
+                            }
                         ]
             in
             searchText
@@ -100,12 +122,12 @@ searchBar searchText =
         [ Grid.column
             []
             [ Input.view
-                [ Attrs.css
-                    [ width (pct 100) ]
+                [ Attrs.css [ width (pct 100) ]
                 , Attrs.value searchText
                 , Attrs.placeholder "search text.."
                 , HtmlEvents.onInput SearchUpdated
                 , HtmlUtil.onEnter EnterPressed
+                , Attrs.id searchBarInputId
                 ]
             ]
         , Grid.column
@@ -125,6 +147,11 @@ searchBar searchText =
     ]
 
 
+searchBarInputId : String
+searchBarInputId =
+    "search-bar-input"
+
+
 
 -- UPDATE --
 
@@ -132,12 +159,12 @@ searchBar searchText =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        HeaderMsg subMsg ->
+        GotHeaderMsg subMsg ->
             ( model
             , Header.update
                 (Model.toSession model)
                 subMsg
-                |> Cmd.map HeaderMsg
+                |> Cmd.map GotHeaderMsg
             )
 
         RunClicked ->
@@ -154,3 +181,36 @@ update msg model =
             model
                 |> Model.setSearchText newSearchText
                 |> CmdUtil.withNoCmd
+
+        EventClicked eventId ->
+            model
+                |> Model.mapLogLines (LogLines.setSelection eventId)
+                |> CmdUtil.withNoCmd
+
+        InputFocused _ ->
+            model
+                |> CmdUtil.withNoCmd
+
+        ContextClicked eventId ->
+            model
+                |> Model.mapLogLines (LogLines.openContext eventId)
+                |> CmdUtil.withNoCmd
+
+        GotContextDialogMsg subMsg ->
+            case model.logLines.contextModel of
+                LogLines.Open contextModel ->
+                    let
+                        ( newSession, newContext ) =
+                            LogLines.updateContextDialog
+                                subMsg
+                                (Model.toSession model)
+                                contextModel
+                    in
+                    model
+                        |> Model.setSession newSession
+                        |> Model.mapLogLines (LogLines.setContext newContext)
+                        |> CmdUtil.withNoCmd
+
+                LogLines.Closed ->
+                    model
+                        |> CmdUtil.withNoCmd

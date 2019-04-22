@@ -1,5 +1,7 @@
 module Session exposing
     ( Session
+    , deleteEvent
+    , getEvent
     , init
     , navigateTo
     , searchEvents
@@ -50,6 +52,16 @@ init navKey flags =
 
 
 -- HELPERS --
+
+
+deleteEvent : Id Event -> Session -> Session
+deleteEvent id session =
+    { session | events = Db.remove id session.events }
+
+
+getEvent : Id Event -> Session -> Maybe Event
+getEvent id session =
+    Db.get session.events id
 
 
 searchEvents : Session -> String -> List ( Id Event, Event )
