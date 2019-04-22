@@ -1,40 +1,48 @@
-# HI THERE
+# Chadtechs Super Flat Elm Architecture
 
-This is my 
+It looks like (to me at least) that many people in the Elm community are learning that nested state is a bad thing. Deep and heirarchal application structures can be difficult to work with. For me learning this lesson has meant learning about how _not_ to nest. This project is just a practice run to try out "super flat" techniques.
 
-# Elm Gulp Browserify Boilerplate
-
-Its basically a template development environment with my favorite tooling and what I believe to be the best practices. Its the repo I pull down when I start new Elm projects. It also might be useful to look at, if you are learning how to use Elm.
-
-How to get going..
 ```
-git clone https://github.com/Chadtech/gulp-elm-boilerplate.git new-project
-cd new-project
-npm install
-gulp
-```
-then open up http://localhost:2957
 
 
-This repo is organized as ..
-```
-elm.json
-gulpFile.js
-package-lock.json
-package.json
-public
-└── index.html
-readme.md
-server.js
-src
-├── Util
-│   └── Html.elm
-│   └── Cmd.elm
+├── Dashboard
+│   ├── Model.elm
+│   │        Model + helpers
+│   └── Page.elm
+│             view, update, Msg
+├── Data
+│   └── Event.elm
+│             Event + helpers
+├── Document.elm
+├── Flags.elm
+├── Header.elm
+│         view, update, Msg
 ├── Main.elm
 ├── Model.elm
 ├── Msg.elm
-├── Ports.elm
+├── Route.elm
+├── Search
+│   ├── Model.elm
+│   │        Model + helpers
+│   └── Page.elm
+│   └── Page.elm
+│             view, update, Msg
+├── Session.elm
 ├── Style.elm
+├── Util
+│   ├── Array.elm
+│   ├── Cmd.elm
+│   ├── Css.elm
+│   ├── Duration.elm
+│   ├── Html.elm
+│   └── String.elm
+├── View
+│   ├── Card.elm
+│   │         view
+│   ├── Input.elm
+│   │         view
+│   └── LogLines.elm
+│             views, Model, model helpers
 ├── View.elm
 └── app.js
 ```
