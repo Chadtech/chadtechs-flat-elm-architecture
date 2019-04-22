@@ -105,10 +105,6 @@ updateFromOk msg model =
                     model
                         |> CmdUtil.withNoCmd
 
-        MsgDecodeFailed _ ->
-            model
-                |> CmdUtil.withNoCmd
-
 
 handleRoute : Maybe Route -> Model -> ( Model, Cmd Msg )
 handleRoute maybeRoute model =

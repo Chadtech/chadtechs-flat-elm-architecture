@@ -38,7 +38,6 @@ type Msg
     | EventClicked (Id Event)
     | InputFocused (Result Browser.Dom.Error ())
     | ContextClicked (Id Event)
-      --    | GotContextDialogMsg LogLines.DialogMsg
     | CloseContextDialogClicked
     | DeleteEventClicked
 
