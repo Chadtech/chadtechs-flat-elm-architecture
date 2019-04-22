@@ -28,19 +28,28 @@ type Msg
 
 view : Route -> Html Msg
 view currentRoute =
+    let
+        routeButtonColumnStyle : Style
+        routeButtonColumnStyle =
+            [ flex (int 0)
+            , flexDirection column
+            , justifyContent center
+            ]
+                |> Css.batch
+    in
     Grid.container
-        []
+        [ width (pct 100) ]
         [ Grid.row
-            [ Style.bottomBorder ]
+            [ Style.bottomBorder
+            , padding (px 10)
+            ]
             [ Grid.column [] [ title ]
             , Grid.column
-                [ margin (px 5)
-                , flex (int 0)
-                ]
+                [ routeButtonColumnStyle ]
                 [ navButton currentRoute Route.Search ]
             , Grid.column
-                [ margin (px 5)
-                , flex (int 0)
+                [ marginLeft (px 10)
+                , routeButtonColumnStyle
                 ]
                 [ navButton currentRoute Route.Dashboard ]
             ]
@@ -74,9 +83,7 @@ navButton currentRoute thisRoute =
 title : Html Msg
 title =
     Html.p
-        [ Attrs.css
-            [ Style.bigFont ]
-        ]
+        [ Attrs.css [ lineHeight (px 22) ] ]
         [ Html.text "log liner" ]
 
 

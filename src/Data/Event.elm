@@ -1,5 +1,6 @@
 module Data.Event exposing
     ( Event
+    , contains
     , generator
     , timestamp
     )
@@ -29,6 +30,11 @@ timestamp =
     .timestamp
 
 
+contains : String -> Event -> Bool
+contains str event =
+    String.contains str event.body
+
+
 
 -- GENERATOR --
 
@@ -42,6 +48,12 @@ generator =
 
 bodyGenerator : Random.Generator String
 bodyGenerator =
+    Random.int 1 5
+        |> Random.andThen bodyPartGenerator
+
+
+bodyPartGenerator : Int -> Random.Generator String
+bodyPartGenerator amountOfParts =
     [ Random.constant "/////"
         |> List.repeat 8
     , Random.constant "%"
@@ -63,6 +75,8 @@ bodyGenerator =
         |> List.concat
         |> Random.uniform (Random.constant "*")
         |> Random.andThen identity
+        |> Random.list amountOfParts
+        |> Random.map (String.join " ")
 
 
 ipGenerator : Random.Generator String

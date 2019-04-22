@@ -1,6 +1,8 @@
 module Search.Model exposing
     ( Model
     , init
+    , search
+    , setSearchText
     , toSession
     )
 
@@ -12,7 +14,10 @@ import Session exposing (Session)
 
 
 type alias Model =
-    { session : Session }
+    { session : Session
+    , searchText : String
+    , search : Maybe String
+    }
 
 
 
@@ -21,7 +26,10 @@ type alias Model =
 
 init : Session -> Model
 init session =
-    { session = session }
+    { session = session
+    , searchText = ""
+    , search = Nothing
+    }
 
 
 
@@ -31,3 +39,13 @@ init session =
 toSession : Model -> Session
 toSession =
     .session
+
+
+setSearchText : String -> Model -> Model
+setSearchText newSearchText model =
+    { model | searchText = newSearchText }
+
+
+search : Model -> Model
+search model =
+    { model | search = Just model.searchText }

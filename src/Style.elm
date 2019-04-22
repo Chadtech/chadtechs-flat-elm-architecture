@@ -2,10 +2,12 @@ module Style exposing
     ( bigFont
     , black
     , bottomBorder
+    , darkGray
     , globals
     , highlightedButton
     , lightGray
     , red
+    , rightBorder
     , white0
     , white1
     )
@@ -21,10 +23,14 @@ globals =
         [ fontFamilies [ "monospace" ]
         , color lightGray
         , margin (px 0)
+        , fontSize (px 15)
         ]
     , Css.Global.body
         [ backgroundColor black
         , margin (px 0)
+        , displayFlex
+        , flexDirection column
+        , height (pct 100)
         ]
     , Css.Global.button
         [ fontFamilies [ "monospace" ]
@@ -33,12 +39,15 @@ globals =
         , color lightGray
         , cursor pointer
         , outline none
+        , fontSize (px 15)
+        , active []
+        , height (px 22)
         ]
     , Css.Global.input
         [ fontFamilies [ "monospace" ]
         , color lightGray
-        , fontSize (em 2)
-        , backgroundColor white1
+        , fontSize (px 15)
+        , backgroundColor darkGray
         , border3 (px 1) solid lightGray
         , outline none
         , width (px 500)
@@ -49,12 +58,15 @@ globals =
 
 highlightedButton : Style
 highlightedButton =
-    border3 (px 1) solid white1
+    [ border3 (px 1) solid white1
+    , color white1
+    ]
+        |> Css.batch
 
 
 bigFont : Style
 bigFont =
-    fontSize (em 2)
+    fontSize (px 30)
 
 
 
@@ -81,6 +93,11 @@ lightGray =
     hex "#d0b5a9"
 
 
+darkGray : Color
+darkGray =
+    hex "#36110d"
+
+
 red : Color
 red =
     hex "#f21d23"
@@ -92,4 +109,9 @@ red =
 
 bottomBorder : Style
 bottomBorder =
-    borderBottom3 (px 3) solid lightGray
+    borderBottom3 (px 1) solid lightGray
+
+
+rightBorder : Style
+rightBorder =
+    borderRight3 (px 1) solid lightGray

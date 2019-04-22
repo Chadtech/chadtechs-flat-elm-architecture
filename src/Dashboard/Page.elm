@@ -4,10 +4,10 @@ module Dashboard.Page exposing
     , view
     )
 
+import Dashboard.Model as Model exposing (Model)
 import Header
 import Html.Styled as Html exposing (Html)
 import Route
-import Search.Model as Model exposing (Model)
 
 
 

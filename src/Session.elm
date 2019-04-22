@@ -2,15 +2,17 @@ module Session exposing
     ( Session
     , init
     , navigateTo
+    , searchEvents
     )
 
 import Browser.Navigation as Nav
 import Data.Event as Event exposing (Event)
 import Db exposing (Db)
 import Flags exposing (Flags)
-import Id
+import Id exposing (Id)
 import Random
 import Route exposing (Route)
+import Time
 
 
 
@@ -48,6 +50,14 @@ init navKey flags =
 
 
 -- HELPERS --
+
+
+searchEvents : Session -> String -> List ( Id Event, Event )
+searchEvents session searchText =
+    session.events
+        |> Db.toList
+        |> List.filter (Tuple.second >> Event.contains searchText)
+        |> List.sortBy (Tuple.second >> Event.timestamp >> Time.posixToMillis)
 
 
 navigateTo : Session -> Route -> Cmd msg
