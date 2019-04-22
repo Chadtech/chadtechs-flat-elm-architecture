@@ -1,15 +1,11 @@
 module View.LogLines exposing
     ( Model
     , bodyView
-    ,  contextButton
-       --    , contextDialog
-
+    , contextButton
     , init
     , lineView
     , setSelection
-    ,  timestampView
-       --    , updateContextDialog
-
+    , timestampView
     )
 
 import Css exposing (..)
