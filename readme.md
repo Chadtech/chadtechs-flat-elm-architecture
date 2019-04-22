@@ -4,7 +4,7 @@ It looks like (to me at least) that many people in the Elm community are learnin
 
 
 ### Live Link
-(here)[http://flat-elm-architecture.surge.sh/]
+[here](http://flat-elm-architecture.surge.sh/)
 
 ### Getting Starts
 ```
