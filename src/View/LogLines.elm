@@ -16,7 +16,7 @@ module View.LogLines exposing
     )
 
 import Css exposing (..)
-import Data.Event exposing (Event)
+import Data.Event as Event exposing (Event)
 import Html.Grid as Grid
 import Html.Styled as Html exposing (Attribute, Html)
 import Html.Styled.Attributes as Attrs
@@ -118,8 +118,8 @@ contextButton clickHandler =
         ]
 
 
-timestampView : Posix -> Html msg
-timestampView time =
+timestampView : Event -> Html msg
+timestampView event =
     Grid.column
         [ flex none
         , minWidth (px 100)
@@ -131,7 +131,8 @@ timestampView time =
             [ Attrs.css
                 [ cursor default ]
             ]
-            [ time
+            [ event
+                |> Event.timestamp
                 |> Time.posixToMillis
                 |> String.fromInt
                 |> Html.text

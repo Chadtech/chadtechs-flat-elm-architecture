@@ -7,7 +7,6 @@ module Style exposing
     , gray
     , highlightedButton
     , lightGray
-    , red
     , rightBorder
     , white0
     , white1
@@ -99,11 +98,6 @@ darkGray =
 gray : Color
 gray =
     hex "#7b421d"
-
-
-red : Color
-red =
-    hex "#f21d23"
 
 
 

@@ -8,7 +8,6 @@ import Flags
 import Json.Decode as Decode
 import Model exposing (Model)
 import Msg exposing (Msg(..))
-import Ports
 import Route exposing (Route)
 import Search.Model
 import Search.Page
@@ -54,13 +53,8 @@ init json url navKey =
 
 
 subscriptions : Result Decode.Error Model -> Sub Msg
-subscriptions result =
-    case result of
-        Ok _ ->
-            Ports.fromJs Msg.decode
-
-        Err _ ->
-            Sub.none
+subscriptions _ =
+    Sub.none
 
 
 
@@ -81,7 +75,7 @@ update msg result =
 
 updateFromOk : Msg -> Model -> ( Model, Cmd Msg )
 updateFromOk msg model =
-    case Debug.log "MSG" msg of
+    case msg of
         RouteChanged maybeRoute ->
             handleRoute maybeRoute model
 

@@ -94,7 +94,7 @@ searchResults model =
                 eventView ( id, event ) =
                     LogLines.lineView
                         [ LogLines.contextButton (ContextClicked id)
-                        , LogLines.timestampView <| Event.timestamp event
+                        , LogLines.timestampView event
                         , LogLines.bodyView
                             { model = model.logLines
                             , attributes = [ HtmlEvents.onClick (EventClicked id) ]
@@ -115,9 +115,7 @@ searchResults model =
                         |> List.map eventView
             in
             Html.div
-                [ Attrs.css
-                    [ overflow auto ]
-                ]
+                [ Attrs.css [ overflow auto ] ]
                 (remainingEventsView events :: eventViews)
 
 

@@ -64,7 +64,7 @@ logLinesView session viewIndex ( searchText, logLines ) =
         eventView : ( Id Event, Event ) -> Html Msg
         eventView ( id, event ) =
             LogLines.lineView
-                [ LogLines.timestampView <| Event.timestamp event
+                [ LogLines.timestampView event
                 , LogLines.bodyView
                     { model = logLines
                     , attributes = []
