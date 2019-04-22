@@ -1,6 +1,5 @@
 module Dashboard.Model exposing
-    ( LogLines
-    , Model
+    ( Model
     , init
     , newLogLinesView
     , removeViewIndex
@@ -20,15 +19,9 @@ import View.LogLines as LogLines
 
 type alias Model =
     { session : Session
-    , logLines : Array LogLines
+    , logLines : Array ( String, LogLines.Model )
     , newLogLinesSearchText : String
     }
-
-
-{-| the String is the search
--}
-type alias LogLines =
-    ( String, LogLines.Model LogLines.NoContext )
 
 
 
@@ -64,7 +57,7 @@ newLogLinesView model =
         , logLines =
             Array.push
                 ( model.newLogLinesSearchText
-                , LogLines.init LogLines.NoContext
+                , LogLines.init
                 )
                 model.logLines
     }

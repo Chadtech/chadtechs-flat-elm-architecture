@@ -44,7 +44,10 @@ viewBody model =
             []
 
         Model.Error _ ->
-            []
+            [ Html.p
+                []
+                [ Html.text "Error!" ]
+            ]
 
         Model.Search searchModel ->
             Search.view searchModel

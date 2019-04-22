@@ -1,6 +1,16 @@
 # Chadtechs Super Flat Elm Architecture
 
-It looks like (to me at least) that many people in the Elm community are learning that nested state is a bad thing. Deep and heirarchal application structures can be difficult to work with. For me learning this lesson has meant learning about how _not_ to nest. This project is just a practice run to try out "super flat" techniques.
+It looks like (to me at least) that many people in the Elm community are learning that nested state is a bad thing. Deep and heirarchal application structures can be difficult to work with. For me, learning this lesson has meant learning about how _not_ to nest. This project is just a practice run to try out "super flat" techniques.
+
+
+### Live Link
+(here)[http://flat-elm-architecture.surge.sh/]
+
+### Getting Starts
+```
+npm install
+gulp
+```
 
 ```
 

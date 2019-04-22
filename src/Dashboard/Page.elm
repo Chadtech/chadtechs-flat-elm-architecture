@@ -51,14 +51,14 @@ view model =
         ++ logLinesViews (Model.toSession model) model.logLines
 
 
-logLinesViews : Session -> Array Model.LogLines -> List (Html Msg)
+logLinesViews : Session -> Array ( String, LogLines.Model ) -> List (Html Msg)
 logLinesViews session logLines =
     logLines
         |> Array.toList
         |> List.indexedMap (logLinesView session)
 
 
-logLinesView : Session -> Int -> ( String, LogLines.Model LogLines.NoContext ) -> Html Msg
+logLinesView : Session -> Int -> ( String, LogLines.Model ) -> Html Msg
 logLinesView session viewIndex ( searchText, logLines ) =
     let
         eventView : ( Id Event, Event ) -> Html Msg

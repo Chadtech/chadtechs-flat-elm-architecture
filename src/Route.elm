@@ -49,5 +49,6 @@ parser : Parser (Route -> a) a
 parser =
     Parser.oneOf
         [ Parser.map Search (top </> s "search")
+        , Parser.map Search top
         , Parser.map Dashboard (top </> s "dashboard")
         ]

@@ -1,18 +1,15 @@
 module View.LogLines exposing
-    ( Context(..)
-    , DialogMsg
-    , Model
-    , NoContext(..)
+    ( Model
     , bodyView
-    , contextButton
-    , contextDialog
+    ,  contextButton
+       --    , contextDialog
+
     , init
     , lineView
-    , openContext
-    , setContext
     , setSelection
-    , timestampView
-    , updateContextDialog
+    ,  timestampView
+       --    , updateContextDialog
+
     )
 
 import Css exposing (..)
@@ -22,72 +19,35 @@ import Html.Styled as Html exposing (Attribute, Html)
 import Html.Styled.Attributes as Attrs
 import Html.Styled.Events as HtmlEvents
 import Id exposing (Id)
-import Session exposing (Session)
 import Style
 import Time exposing (Posix)
 import Util.Css as CssUtil
-import View.Card as Card
 
 
 
 -- TYPES --
 
 
-type alias Model context =
-    { selection : Maybe (Id Event)
-    , contextModel : context
-    }
-
-
-type NoContext
-    = NoContext
-
-
-type Context
-    = Closed
-    | Open ContextModel
-
-
-type alias ContextModel =
-    { eventId : Id Event
-    , showDeleteConfirmation : Bool
-    }
+type alias Model =
+    { selection : Maybe (Id Event) }
 
 
 
 -- INIT --
 
 
-init : context -> Model context
-init context =
-    { selection = Nothing
-    , contextModel = context
-    }
+init : Model
+init =
+    { selection = Nothing }
 
 
 
 -- HELPERS --
 
 
-setSelection : Id Event -> Model context -> Model context
+setSelection : Id Event -> Model -> Model
 setSelection id model =
     { model | selection = Just id }
-
-
-openContext : Id Event -> Model Context -> Model Context
-openContext id model =
-    { model
-        | contextModel =
-            Open
-                { eventId = id
-                , showDeleteConfirmation = False
-                }
-    }
-
-
-setContext : Context -> Model Context -> Model Context
-setContext context model =
-    { model | contextModel = context }
 
 
 
@@ -148,15 +108,15 @@ lineView =
         ]
 
 
-type alias BodyParams context msg =
-    { model : Model context
+type alias BodyParams msg =
+    { model : Model
     , attributes : List (Attribute msg)
     , text : String
     , eventId : Id Event
     }
 
 
-bodyView : BodyParams context msg -> Html msg
+bodyView : BodyParams msg -> Html msg
 bodyView params =
     let
         selectedBackgroundColor : Style
@@ -190,104 +150,24 @@ bodyView params =
 
 
 -- CONTEXT VIEW --
-
-
-type DialogMsg
-    = CloseClicked
-    | DeleteClicked
-
-
-contextDialog : Session -> Context -> Html DialogMsg
-contextDialog session context =
-    case context of
-        Open contextModel ->
-            case Session.getEvent contextModel.eventId session of
-                Just event ->
-                    Html.div
-                        [ Attrs.css
-                            [ position absolute
-                            , top (px 0)
-                            , left (px 0)
-                            , width (pct 100)
-                            , height (pct 100)
-                            , backgroundColor (rgba 9 9 7 0.5)
-                            ]
-                        ]
-                        [ openContextDialogView event contextModel ]
-
-                Nothing ->
-                    Html.text ""
-
-        Closed ->
-            Html.text ""
-
-
-openContextDialogView : Event -> ContextModel -> Html DialogMsg
-openContextDialogView event contextModel =
-    let
-        buttonText : String
-        buttonText =
-            if contextModel.showDeleteConfirmation then
-                "are you sure?"
-
-            else
-                "delete event"
-    in
-    Card.view
-        [ position absolute
-        , top (pct 50)
-        , left (pct 50)
-        , transform (translate2 (pct -50) (pct -50))
-        ]
-        [ Card.header
-            [ Html.p
-                []
-                [ Html.text "event context" ]
-            ]
-            CloseClicked
-        , Card.body
-            []
-            [ Html.div
-                [ Attrs.css
-                    [ padding (px 10) ]
-                ]
-                [ Html.p
-                    []
-                    [ Html.text event.body ]
-                ]
-            ]
-        , Html.div
-            [ Attrs.css
-                [ displayFlex
-                , justifyContent flexEnd
-                ]
-            ]
-            [ Html.button
-                [ HtmlEvents.onClick DeleteClicked
-                , Attrs.css
-                    [ backgroundColor Style.black
-                    , hover [ Style.highlightedButton ]
-                    , marginTop (px 10)
-                    ]
-                ]
-                [ Html.text buttonText ]
-            ]
-        ]
-
-
-updateContextDialog : DialogMsg -> Session -> ContextModel -> ( Session, Context )
-updateContextDialog msg session contextModel =
-    case msg of
-        CloseClicked ->
-            ( session, Closed )
-
-        DeleteClicked ->
-            if contextModel.showDeleteConfirmation then
-                ( Session.deleteEvent contextModel.eventId session
-                , Closed
-                )
-
-            else
-                ( session
-                , Open { contextModel | showDeleteConfirmation = True }
-                )
+--
+--type DialogMsg
+--    = CloseClicked
+--    | DeleteClicked
+--
+--updateContextDialog : DialogMsg -> Session -> ContextModel -> ( Session, Context )
+--updateContextDialog msg session contextModel =
+--    case msg of
+--        CloseClicked ->
+--            ( session, Closed )
+--
+--        DeleteClicked ->
+--            if contextModel.showDeleteConfirmation then
+--                ( Session.deleteEvent contextModel.eventId session
+--                , Closed
+--                )
+--
+--            else
+--                ( session
+--                , Open { contextModel | showDeleteConfirmation = True }
+--                )

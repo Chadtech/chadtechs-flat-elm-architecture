@@ -7,7 +7,7 @@ module Search.Page exposing
 
 import Browser.Dom
 import Css exposing (..)
-import Data.Event as Event exposing (Event)
+import Data.Event exposing (Event)
 import Header
 import Html.Grid as Grid
 import Html.Styled as Html exposing (Html)
@@ -16,11 +16,12 @@ import Html.Styled.Events as HtmlEvents
 import Id exposing (Id)
 import Route
 import Search.Model as Model exposing (Model)
-import Session
+import Session exposing (Session)
 import Style
 import Task
 import Util.Cmd as CmdUtil
 import Util.Html as HtmlUtil
+import View.Card as Card
 import View.Input as Input
 import View.LogLines as LogLines
 
@@ -37,7 +38,9 @@ type Msg
     | EventClicked (Id Event)
     | InputFocused (Result Browser.Dom.Error ())
     | ContextClicked (Id Event)
-    | GotContextDialogMsg LogLines.DialogMsg
+      --    | GotContextDialogMsg LogLines.DialogMsg
+    | CloseContextDialogClicked
+    | DeleteEventClicked
 
 
 
@@ -56,10 +59,9 @@ init =
 
 view : Model -> List (Html Msg)
 view model =
-    [ LogLines.contextDialog
+    [ contextDialog
         (Model.toSession model)
-        model.logLines.contextModel
-        |> Html.map GotContextDialogMsg
+        model.context
     , Header.view Route.Search
         |> Html.map GotHeaderMsg
     , Html.div
@@ -182,6 +184,84 @@ searchBarInputId =
     "search-bar-input"
 
 
+contextDialog : Session -> Model.Context -> Html Msg
+contextDialog session context =
+    case context of
+        Model.Open contextModel ->
+            case Session.getEvent contextModel.eventId session of
+                Just event ->
+                    Html.div
+                        [ Attrs.css
+                            [ position absolute
+                            , top (px 0)
+                            , left (px 0)
+                            , width (pct 100)
+                            , height (pct 100)
+                            , backgroundColor (rgba 9 9 7 0.5)
+                            ]
+                        ]
+                        [ openContextDialogView event contextModel ]
+
+                Nothing ->
+                    Html.text ""
+
+        Model.Closed ->
+            Html.text ""
+
+
+openContextDialogView : Event -> Model.ContextModel -> Html Msg
+openContextDialogView event contextModel =
+    let
+        buttonText : String
+        buttonText =
+            if contextModel.showDeleteConfirmation then
+                "are you sure?"
+
+            else
+                "delete event"
+    in
+    Card.view
+        [ position absolute
+        , top (pct 50)
+        , left (pct 50)
+        , transform (translate2 (pct -50) (pct -50))
+        ]
+        [ Card.header
+            [ Html.p
+                []
+                [ Html.text "event context" ]
+            ]
+            CloseContextDialogClicked
+        , Card.body
+            []
+            [ Html.div
+                [ Attrs.css
+                    [ padding (px 10) ]
+                ]
+                [ Html.p
+                    []
+                    [ Html.text event.body ]
+                ]
+            ]
+        , Html.div
+            [ Attrs.css
+                [ displayFlex
+                , justifyContent flexEnd
+                ]
+            ]
+            [ Html.button
+                [ HtmlEvents.onClick DeleteEventClicked
+                , Attrs.css
+                    [ backgroundColor Style.black
+                    , hover [ Style.highlightedButton ]
+                    , marginTop (px 10)
+                    ]
+                ]
+                [ Html.text buttonText ]
+            ]
+        ]
+
+
 
 -- UPDATE --
 
@@ -223,24 +303,29 @@ update msg model =
 
         ContextClicked eventId ->
             model
-                |> Model.mapLogLines (LogLines.openContext eventId)
+                |> Model.openContext eventId
                 |> CmdUtil.withNoCmd
 
-        GotContextDialogMsg subMsg ->
-            case model.logLines.contextModel of
-                LogLines.Open contextModel ->
-                    let
-                        ( newSession, newContext ) =
-                            LogLines.updateContextDialog
-                                subMsg
-                                (Model.toSession model)
-                                contextModel
-                    in
-                    model
-                        |> Model.setSession newSession
-                        |> Model.mapLogLines (LogLines.setContext newContext)
-                        |> CmdUtil.withNoCmd
+        CloseContextDialogClicked ->
+            model
+                |> Model.closeDialog
+                |> CmdUtil.withNoCmd
 
-                LogLines.Closed ->
+        DeleteEventClicked ->
+            case model.context of
+                Model.Open contextModel ->
+                    if contextModel.showDeleteConfirmation then
+                        model
+                            |> Model.mapSession
+                                (Session.deleteEvent contextModel.eventId)
+                            |> Model.closeDialog
+                            |> CmdUtil.withNoCmd
+
+                    else
+                        model
+                            |> Model.setContext { contextModel | showDeleteConfirmation = True }
+                            |> CmdUtil.withNoCmd
+
+                Model.Closed ->
                     model
                         |> CmdUtil.withNoCmd
