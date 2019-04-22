@@ -146,28 +146,3 @@ bodyView params =
             attributes
             [ Html.text params.text ]
         ]
-
-
-
--- CONTEXT VIEW --
---
---type DialogMsg
---    = CloseClicked
---    | DeleteClicked
---
---updateContextDialog : DialogMsg -> Session -> ContextModel -> ( Session, Context )
---updateContextDialog msg session contextModel =
---    case msg of
---        CloseClicked ->
---            ( session, Closed )
---
---        DeleteClicked ->
---            if contextModel.showDeleteConfirmation then
---                ( Session.deleteEvent contextModel.eventId session
---                , Closed
---                )
---
---            else
---                ( session
---                , Open { contextModel | showDeleteConfirmation = True }
---                )
